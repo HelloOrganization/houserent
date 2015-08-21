@@ -1,4 +1,11 @@
-*pyc
 *~*
-*swp*
+*.swap
+*.pyc
+*Rhistory
+*RData
+*.swp
+*.ipynb
 screenlog*
+*.ign
+*.ignore
+.nfs*
