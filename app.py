@@ -8,8 +8,8 @@ import time
 import random
 import datetime
 
-from flask import Flask, request
-from flask import render_template, send_file, make_response, redirect
+from flask import Flask, request, session, escape
+from flask import render_template, send_file, make_response, redirect, url_for
 from flask.ext.mysql import MySQL
 
 DEBUG = True
@@ -47,6 +47,13 @@ def teardown_request(exception):
 def index():
     return render_template('index.html')
 
+@app.route('/user', methods=['GET'])
+def user():
+    return render_template('user.html')
+@app.route('/realty', methods=['GET'])
+def realty():
+    return render_template('realty.html')
+
 @app.route('/signUp', methods=['POST'])
 def signUp():
     user_email = request.form.get('new_email', None)
@@ -67,13 +74,19 @@ def signUp():
         else:
             cursor.callproc('sp_realtySignUp',(user_email, user_pswd, realty_name, realty_date, realty_url, user_enter_date))
         data = cursor.fetchall()
-        if len(data) is 0:
+        if len(data) == 0:
             conn.commit()
-            return 'Ok'
+            conn.close()
+            if user_type == '0':
+                resp = redirect(url_for('user'))
+            else:
+                resp = redirect(url_for('realty'))
+            resp.set_cookie('user_email', user_email)
+            return resp
         return 'Failed'
     return 'Failed'
 
-@app.route('/user/signIn', methods=['POST'])
+@app.route('/signIn', methods=['POST'])
 def signIn():
     user_email = request.form.get('exist_email', None)
     user_pswd = request.form.get('exist_passwd', None)
@@ -82,15 +95,29 @@ def signIn():
         conn = mysql.connect()
         cursor = conn.cursor()
         if user_type == '0':
-            cursor.execute('select exists (select 1 from Renter where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');')
+            cursor.execute('select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";')
         else:
-            cursor.execute('select exists (select 1 from Realty where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');')
+            cursor.execute('select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";')
         data = cursor.fetchall()
-        if data == 0:
-            return 'Failed'
+        conn.close()
+        if len(data) == 0:
+            return 'Sign in failed'
         else:
-            return 'Ok'
-    return 'Failed'
+            if user_type == '0':
+                resp = redirect(url_for('user'))
+            else:
+                resp = redirect(url_for('realty'))
+            resp.set_cookie('user_email', user_email)
+            return resp
+    return 'Sign in failed'
+
+@app.route('/signOut')
+def signOut():
+    # remove the username from the session if it's there
+    # session.pop('user_email', None)
+    resp = redirect(url_for('index'))
+    resp.set_cookie('user_email', None)
+    return resp
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))

@@ -6,9 +6,10 @@ CREATE PROCEDURE sp_renterSignUp(
     IN u_register_date date
 )
 BEGIN
-    if ( select exists (select 1 from Renter where renter_email = u_email) ) THEN
+    if ( select exists (select 1 from Renter where renter_email = u_email
+        union select 2 from Realty where realty_email = u_email) ) THEN
 
-        select 'Username Exists !!';
+        select 'Email Exists !!';
 
     ELSE
 
@@ -40,9 +41,9 @@ CREATE PROCEDURE sp_realtySignUp(
     IN r_register_date date
 )
 BEGIN
-    if ( select exists (select 1 from Realty where realty_email = r_email) ) THEN
-
-        select 'Realty Exists !!';
+    if ( select exists (select 1 from Realty where realty_email = r_email
+        union select 2 from Renter where renter_email = r_email) ) THEN
+        select 'Email Exists !!';
 
     ELSE
 
