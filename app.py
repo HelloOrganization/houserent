@@ -131,8 +131,11 @@ def parseNum(num):
     else:
         return None, None
 
-@app.route('/addHouse')
+@app.route('/addHouse', methods=['POST'])
 def addHouse():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return 'Sign in first!'
     city = request.form.get('city', None)
     street = request.form.get('street', None)
     rent = request.form.get('rent', None)
@@ -142,15 +145,15 @@ def addHouse():
     house_size = request.form.get('house_size', None)
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.callproc('sp_addHouse',(city, street, ))
-
-    if user_type == '0':
-        cursor.execute('select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";')
-    else:
-        cursor.execute('select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";')
+    cursor.callproc('sp_addHouse',(user_email, city, street, 1, rent, bedroom, bathroom, house_floor, house_size))
     data = cursor.fetchall()
-    conn.close()
-
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        #resp = redirect(url_for(''))
+        return 'OK'
+    else:
+        return 'Failed'
 
 @app.route('/search')
 def search():

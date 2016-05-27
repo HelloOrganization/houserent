@@ -74,10 +74,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS sp_addHouse $$
 CREATE PROCEDURE sp_addHouse(
    IN email        varchar(64),
-   IN c_city             varchar(64),
-   IN c_street           varchar(64),
-   IN h_city           varchar(64),
-   IN h_street         varchar(256),
+   IN city             varchar(64),
+   IN street           varchar(64),
    IN avail         bool,
    IN rt                 int,
    IN bed              int,
@@ -86,13 +84,23 @@ CREATE PROCEDURE sp_addHouse(
    IN size           int
 )
 BEGIN
+    if ( select not exists (select 1 from Environment where env_city = city and env_street = street ) ) THEN
+        insert into Environment
+            (
+                env_city,
+                env_street
+            )
+            values
+            (
+                city,
+                street
+            );
+    END if;
     insert into House
     (
        realty_email,
-       com_city,
-       com_street,
-       house_city,
-       house_street,
+       env_city,
+       env_street,
        availability,
        rent,
        bedroom,
@@ -103,10 +111,8 @@ BEGIN
     values
     (
        email,
-       c_city,
-       c_street,
-       h_city,
-       h_street,
+       city,
+       street,
        avail,
        rt,
        bed,
