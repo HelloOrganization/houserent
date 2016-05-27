@@ -56,9 +56,9 @@ def signUp():
     if user_type == None:
         user_type = 0
     else:
-
-
-
+        realty_name = request.form.get('realty_name', None)
+        realty_date = request.form.get('realty_date', None)
+        realty_url = request.form.get('realty_url', None)
     print 'signUp:', user_email, user_pswd, user_enter_date, user_type
     if user_email and user_pswd:
         conn = mysql.connect()

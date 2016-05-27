@@ -1,12 +1,11 @@
 DELIMITER $$
-CREATE PROCEDURE sp_signUp(
+CREATE PROCEDURE sp_renterSignUp(
     IN u_email VARCHAR(20),
     IN u_pswd VARCHAR(20),
-    IN u_enter_date date,
-    IN u_type bool
+    IN u_register_date date
 )
 BEGIN
-    if ( select exists (select 1 from User where user_email = u_email) ) THEN
+    if ( select exists (select 1 from Renter where renter_email = u_email) ) THEN
 
         select 'Username Exists !!';
 
@@ -14,17 +13,53 @@ BEGIN
 
         insert into User
         (
-            user_email,
-            user_pswd,
-            user_enter_date,
-            user_type
+            renter_email,
+            renter_pswd,
+            renter_register_date
         )
         values
         (
             u_email,
             u_pswd,
-            u_enter_date,
-            u_type
+            u_register_date
+        );
+
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE sp_realtySignUp(
+    IN r_email VARCHAR(20),
+    IN r_name VARCHAR(20),
+    IN r_pswd VARCHAR(20),
+    IN r_setup_date date,
+    IN r_website VARCHAR(20),
+    IN r_register_date date
+)
+BEGIN
+    if ( select exists (select 1 from Realty where renter_email = r_email) ) THEN
+
+        select 'Realty Exists !!';
+
+    ELSE
+
+        insert into User
+        (
+            realty_email,
+            realty_name,
+            realty_setup_date,
+            website,
+            realty_register_date
+        )
+        values
+        (
+            r_email,
+            r_name,
+            r_pswd,
+            r_setup_date,
+            r_website,
+            r_register_date
         );
 
     END IF;
