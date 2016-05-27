@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>¼òÒ××â·¿ĞÅÏ¢ÍøÕ¾</title>
-   <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
-   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
+	<meta charset="utf-8">
+	<title>ç®€æ˜“ç§Ÿæˆ¿ä¿¡æ¯ç½‘ç«™</title>
+	<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+	<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -13,27 +13,27 @@
 		<div class="col-md-3">
 		</div>
 		<div class="col-md-6">
-			<h1>»¶Ó­Ê¹ÓÃ¼òÒ××â·¿ĞÅÏ¢ÍøÕ¾£¡</h1>
+			<h1>æ¬¢è¿ä½¿ç”¨ç®€æ˜“ç§Ÿæˆ¿ä¿¡æ¯ç½‘ç«™ï¼</h1>
 			<br/>
 			<ul id="myTab" class="nav nav-tabs">
-				<li class="active" style="width:50%"><a href="#home" data-toggle="tab">×¢²á</a></li>
-				<li style="width:50%"><a href="#signin" data-toggle="tab">µÇÂ¼</a></li>
+				<li class="active" style="width:50%"><a href="#home" data-toggle="tab">æ³¨å†Œ</a></li>
+				<li style="width:50%"><a href="#signin" data-toggle="tab">ç™»å½•</a></li>
 			</ul>
 			<div id="myTabContent" class="tab-content">
 				<div class="tab-pane fade in active" id="home">
 					<form name="signup" method="post" onsubmit="return validate_signup_form(this);" action="">
 					<br/>
-					µç×ÓÓÊ¼ş£º<input type="text" name="new_email"><br/><br/>
-					ÃÜÂë£º<input type="text" name="new_passwd"><br/><br/>
-					<input type="checkbox" name="user_type" />ÎÒÊÇÎïÒµ<br/><br/>
-					<input type="submit" value="×¢²á"> 
+					ç”µå­é‚®ä»¶ï¼š<input type="text" name="new_email"><br/><br/>
+					å¯†ç ï¼š<input type="text" name="new_passwd"><br/><br/>
+					<input type="checkbox" name="user_type" />æˆ‘æ˜¯ç‰©ä¸š<br/><br/>
+					<input type="submit" value="æ³¨å†Œ"> 
 				</div>
 				<div class="tab-pane fade" id="signin">
 					<form name="signin" method="post" onsubmit="return check_existance(this);" action="">
 					<br/>
-					µç×ÓÓÊ¼ş£º<input type="text" name="exist_email"><br/><br/>
-					ÃÜÂë£º<input type="text" name="exist_passwd"><br/><br/>
-					<input type="submit" value="µÇÂ¼"> 
+					ç”µå­é‚®ä»¶ï¼š<input type="text" name="exist_email"><br/><br/>
+					å¯†ç ï¼š<input type="text" name="exist_passwd"><br/><br/>
+					<input type="submit" value="ç™»å½•"> 
 				</div>
 			</div>
 		</div>
@@ -47,19 +47,19 @@
    });
    function validate_signup_form(thisform){
 		with (thisform){
-			if (validate_required(new_email,"ÇëÊäÈëÓÊÏä")==false){
+			if (validate_required(new_email,"è¯·è¾“å…¥é‚®ç®±")==false){
 				email.focus();
 				return false
 			}
-			if (validate_email(new_email,"ÇëÊäÈëÕıÈ·µÄÓÊÏä")==false){
+			if (validate_email(new_email,"è¯·è¾“å…¥æ­£ç¡®çš„é‚®ç®±")==false){
 				email.focus();
 				return false
 			}
-			if (validate_required(new_passwd,"ÇëÊäÈëÃÜÂë")==false){
+			if (validate_required(new_passwd,"è¯·è¾“å…¥å¯†ç ")==false){
 				passwd.focus();
 				return false
 			}
-			if (is_join && validate_required(user_type,"ÇëÖ¸Ã÷ÓÃ»§ÀàĞÍ")==false){
+			if (is_join && validate_required(user_type,"è¯·æŒ‡æ˜ç”¨æˆ·ç±»å‹")==false){
 				user_type.focus();
 				return false
 			}
