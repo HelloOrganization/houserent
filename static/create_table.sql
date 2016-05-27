@@ -4,15 +4,9 @@
 /*==============================================================*/
 
 drop table if exists Save;
-
-<<<<<<< HEAD
-drop table if exists Save;
 drop table if exists House;
 
-drop table if exists Community;
-=======
 drop table if exists Environment;
->>>>>>> 658dffafdc4c1f2eb3e3de78510441536edd1965
 
 
 drop table if exists Realty;
