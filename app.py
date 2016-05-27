@@ -52,10 +52,9 @@ def signUp():
     user_email = request.form.get('new_email', None)
     user_pswd = request.form.get('new_passwd', None)
     user_enter_date = str(datetime.date.today())
-    user_type = request.form.get('user_type', None)
-    if user_type == None:
-        user_type = 0
-    else:
+    user_type = request.form.get('user_type', '0')
+    if user_type == '1':
+        print 'yes'
         realty_name = request.form.get('realty_name', None)
         realty_date = request.form.get('realty_date', None)
         realty_url = request.form.get('realty_url', None)
@@ -63,7 +62,10 @@ def signUp():
     if user_email and user_pswd:
         conn = mysql.connect()
         cursor = conn.cursor()
-        cursor.callproc('sp_signUp',(user_email, user_pswd, user_enter_date, user_type))
+        if user_type == '0':
+            cursor.callproc('sp_renterSignUp',(user_email, user_pswd, user_enter_date))
+        else:
+            cursor.callproc('sp_realtySignUp',(user_email, user_pswd, realty_name, realty_date, realty_url, user_enter_date))
         data = cursor.fetchall()
         if len(data) is 0:
             conn.commit()
@@ -73,12 +75,16 @@ def signUp():
 
 @app.route('/user/signIn', methods=['POST'])
 def signIn():
-    user_email = request.form.get('new_email', None)
-    user_pswd = request.form.get('new_passwd', None)
+    user_email = request.form.get('exist_email', None)
+    user_pswd = request.form.get('exist_passwd', None)
+    user_type = request.form.get('user_type', '0')
     if user_email and user_pswd:
         conn = mysql.connect()
         cursor = conn.cursor()
-        cursor.execute('''select exists (select 1 from User where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');''')
+        if user_type == '0':
+            cursor.execute('select exists (select 1 from Renter where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');')
+        else:
+            cursor.execute('select exists (select 1 from Realty where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');')
         data = cursor.fetchall()
         if data == 0:
             return 'Failed'
