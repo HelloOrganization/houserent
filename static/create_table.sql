@@ -1,9 +1,8 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2016/5/27 18:43:24                           */
+/* Created on:     2016/5/27 21:27:43                           */
 /*==============================================================*/
 
-drop table if exists Save;
 
 drop table if exists Environment;
 
@@ -12,6 +11,8 @@ drop table if exists House;
 drop table if exists Realty;
 
 drop table if exists Renter;
+
+drop table if exists Save;
 
 /*==============================================================*/
 /* Table: Environment                                           */
@@ -31,7 +32,7 @@ create table Environment
 /*==============================================================*/
 create table House
 (
-   houseid              varchar(64) not null,
+   houseid              int not null auto_increment,
    realty_email         varchar(64) not null,
    com_city             varchar(64) not null,
    com_street           varchar(64) not null,
@@ -77,7 +78,7 @@ create table Renter
 create table Save
 (
    renter_email         varchar(64) not null,
-   houseid              varchar(64) not null,
+   houseid              int not null,
    primary key (renter_email, houseid)
 );
 
