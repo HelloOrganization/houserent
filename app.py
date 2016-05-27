@@ -53,10 +53,14 @@ def signUp():
     user_pswd = request.form.get('new_passwd', None)
     user_enter_date = str(datetime.date.today())
     user_type = request.form.get('user_type', None)
+    if user_type == None:
+        user_type = 0
+    else:
+
+
+
     print 'signUp:', user_email, user_pswd, user_enter_date, user_type
     if user_email and user_pswd:
-        if user_type == None:
-            user_type = 0
         conn = mysql.connect()
         cursor = conn.cursor()
         cursor.callproc('sp_signUp',(user_email, user_pswd, user_enter_date, user_type))
@@ -67,6 +71,20 @@ def signUp():
         return 'Failed'
     return 'Failed'
 
+@app.route('/user/signIn', methods=['POST'])
+def signIn():
+    user_email = request.form.get('new_email', None)
+    user_pswd = request.form.get('new_passwd', None)
+    if user_email and user_pswd:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute('''select exists (select 1 from User where user_email = ' + user_email + ' and user_pswd = ' + user_pswd + ');''')
+        data = cursor.fetchall()
+        if data == 0:
+            return 'Failed'
+        else:
+            return 'Ok'
+    return 'Failed'
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
