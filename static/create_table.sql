@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2016/5/27 18:43:24                           */
+/* Created on:     2016/5/27 22:09:04                           */
 /*==============================================================*/
 
 drop table if exists Save;
@@ -19,17 +19,18 @@ drop table if exists Realty;
 
 drop table if exists Renter;
 
+
 /*==============================================================*/
 /* Table: Environment                                           */
 /*==============================================================*/
 create table Environment
 (
-   com_city             varchar(64) not null,
-   com_street           varchar(64) not null,
-   com_nearbymarket     int,
-   com_nearbyschool     int,
-   com_safety           int,
-   primary key (com_city, com_street)
+   env_city             varchar(64) not null,
+   env_street           varchar(64) not null,
+   env_nearbymarket     int,
+   env_nearbyschool     int,
+   env_safety           int,
+   primary key (env_city, env_street)
 );
 
 /*==============================================================*/
@@ -37,12 +38,10 @@ create table Environment
 /*==============================================================*/
 create table House
 (
-   houseid              varchar(64) not null,
+   houseid              int not null auto_increment,
    realty_email         varchar(64) not null,
-   com_city             varchar(64) not null,
-   com_street           varchar(64) not null,
-   house_city           varchar(64) not null,
-   house_street         varchar(256) not null,
+   env_city             varchar(64) not null,
+   env_street           varchar(64) not null,
    availability         bool not null,
    rent                 int not null,
    bedroom              int not null,
@@ -83,12 +82,12 @@ create table Renter
 create table Save
 (
    renter_email         varchar(64) not null,
-   houseid              varchar(64) not null,
+   houseid              int not null,
    primary key (renter_email, houseid)
 );
 
-alter table House add constraint FK_Belong foreign key (com_city, com_street)
-      references Environment (com_city, com_street) on delete restrict on update restrict;
+alter table House add constraint FK_Belong foreign key (env_city, env_street)
+      references Environment (env_city, env_street) on delete restrict on update restrict;
 
 alter table House add constraint FK_Own foreign key (realty_email)
       references Realty (realty_email) on delete restrict on update restrict;
