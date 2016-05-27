@@ -23,25 +23,25 @@
 				<div class="tab-pane fade in active" id="home">
 					<form name="signup" method="post" onsubmit="return validate_signup_form(this);" action="/signUp">
 					<br/>
-					电子邮件：<input type="email" name="new_email"><br/><br/>
-					密码：<input type="text" name="new_passwd"><br/><br/>
+					电子邮件：<input type="email" name="new_email" required="required"><br/><br/>
+					密码：<input type="text" name="new_passwd" required="required"><br/><br/>
 					<div id="realty">
 					物业名称：<input type="text" name="realty_name"><br/><br/>
-					物业成立时间：<input type="date" name="realty_date"><br/><br/>
+					物业成立时间：<input type="month" name="realty_date"><br/><br/>
 					物业主页：<input type="url" name="realty_url"><br/><br/>
 					</div>
 					<input type="checkbox" id="is_realty" name="user_type" value="1" onchange="change_vis()"/>我是物业<br/><br/>
 					<input type="submit" value="注册">
-					
+					</form>
 				</div>
 				<div class="tab-pane fade" id="signin">
 					<form name="signin" method="post" action="">
 					<br/>
-					电子邮件：<input type="email" name="exist_email"><br/><br/>
-					密码：<input type="text" name="exist_passwd"><br/><br/>
+					电子邮件：<input type="email" name="exist_email" required="required"><br/><br/>
+					密码：<input type="text" name="exist_passwd" required="required"><br/><br/>
 					<input type="checkbox" name="user_type" value="1" />我是物业<br/><br/>
 					<input type="submit" value="登录">
-					<div 
+					</form>
 				</div>
 			</div>
 		</div>
@@ -54,30 +54,7 @@
       $('#myTab li:eq(1) a').tab('show');
 	  $("#realty").hide();
    });
-   
-   function validate_signup_form(thisform){
-		with (thisform){
-			if (validate_required(new_email,"请输入邮箱")==false){
-				email.focus();
-				return false
-			}
-			if (validate_required(new_passwd,"请输入密码")==false){
-				passwd.focus();
-				return false
-			}
-		}
-	}
-   function validate_required(field,alerttxt){
-		with (field){
-			if (value==null||value==""){
-				alert(alerttxt);
-				return false
-			} else {
-				return true
-			}
-		}
-	}
-	
+   	
 	function change_vis(){  
 	//alert($('#is_realty').is(':checked'));
 		if ($('#is_realty').is(':checked') == true) { 
