@@ -1,8 +1,9 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2016/5/27 17:53:37                           */
+/* Created on:     2016/5/27 18:20:03                           */
 /*==============================================================*/
 
+drop table if exists Save;
 
 drop table if exists Save;
 drop table if exists House;
@@ -53,6 +54,7 @@ create table House
 create table Realty
 (
    realty_email         varchar(64) not null,
+   realty_pswd          varchar(64) not null,
    realty_name          varchar(64) not null,
    realty_setup_date    date,
    website              varchar(256),
