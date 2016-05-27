@@ -119,6 +119,53 @@ def signOut():
     resp.set_cookie('user_email', None)
     return resp
 
+def parseNum(num):
+    if num != '#':
+        lx = len(num)
+        n = num
+        op = ' = '
+        if num[lx - 1] == '+' :
+            n = num[:(lx - 1)]
+            op = ' >= '
+        return  op, n
+    else:
+        return None, None
+
+@app.route('/addHouse')
+def addHouse():
+    city = request.form.get('city', None)
+    street = request.form.get('street', None)
+    rent = request.form.get('rent', None)
+    bedroom = request.form.get('bedroom', None)
+    bathroom = request.form.get('bathroom', None)
+    house_floor = request.form.get('house_floor', None)
+    house_size = request.form.get('house_size', None)
+    qstr = 'insert into House'
+
+
+@app.route('/search')
+def search():
+    city = request.form.get('city', None)
+    min_rent = str(request.form.get('min_rent', -1))
+    max_rent = str(request.form.get('max_rent', 100000))
+    bedroom = request.form.get('bedroom', None)
+    bathroom = request.form.get('bathroom', None)
+    qstr  = 'select * from House where rent >= ' + min_rent + ' and rent <= ' + max_rent
+    if city != None:
+        qstr += 'and city = "' + city + '"'
+    op, n = parseNum(bedroom)
+    if op != None:
+        qstr += ' and bedroom' + op + n
+    op, n = parseNum(bathroom)
+    if op != None:
+        qstr += ' and bathroom' + op + n
+    qstr += ';'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute(qstr)
+    res = cursor.fetchall()
+    return res
+
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
 	app.run(host='0.0.0.0', port=port)
