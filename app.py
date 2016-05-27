@@ -140,7 +140,16 @@ def addHouse():
     bathroom = request.form.get('bathroom', None)
     house_floor = request.form.get('house_floor', None)
     house_size = request.form.get('house_size', None)
-    qstr = 'insert into House'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.callproc('sp_addHouse',(city, street, ))
+
+    if user_type == '0':
+        cursor.execute('select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";')
+    else:
+        cursor.execute('select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";')
+    data = cursor.fetchall()
+    conn.close()
 
 
 @app.route('/search')

@@ -69,3 +69,50 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS sp_addHouse $$
+CREATE PROCEDURE sp_addHouse(
+   IN email        varchar(64),
+   IN c_city             varchar(64),
+   IN c_street           varchar(64),
+   IN h_city           varchar(64),
+   IN h_street         varchar(256),
+   IN avail         bool,
+   IN rt                 int,
+   IN bed              int,
+   IN bath             int,
+   IN floor          int,
+   IN size           int
+)
+BEGIN
+    insert into House
+    (
+       realty_email,
+       com_city,
+       com_street,
+       house_city,
+       house_street,
+       availability,
+       rent,
+       bedroom,
+       bathroom,
+       house_floor,
+       house_size
+    )
+    values
+    (
+       email,
+       c_city,
+       c_street,
+       h_city,
+       h_street,
+       avail,
+       rt,
+       bed,
+       bath,
+       floor,
+       size
+    );
+END$$
+DELIMITER ;
