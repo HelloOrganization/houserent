@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2016/5/27 16:18:59                           */
+/* Created on:     2016/5/27 17:53:37                           */
 /*==============================================================*/
 
 
@@ -55,7 +55,7 @@ create table Realty
    realty_name          varchar(64) not null,
    realty_setup_date    date,
    website              varchar(256),
-   realty_register_date char(10),
+   realty_register_date date not null,
    primary key (realty_email)
 );
 

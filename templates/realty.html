@@ -10,9 +10,9 @@
 <body>
 <div class="container">
 	<div class="row" >
-		<div class="col-md-3">
+		<div class="col-md-2">
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<h1>欢迎使用简易租房信息网站！</h1>
 			<br/>
 			<ul id="myTab" class="nav nav-tabs">
@@ -21,48 +21,46 @@
 			</ul>
 			<div id="myTabContent" class="tab-content">
 				<div class="tab-pane fade in active" id="home">
-					<form name="signup" method="post" onsubmit="return validate_signup_form(this);" action="/signUp">
+					<form name="signup" method="post" onsubmit="return validate_signup_form(this);" action="">
 					<br/>
-					电子邮件：<input type="email" name="new_email"><br/><br/>
+					电子邮件：<input type="text" name="new_email"><br/><br/>
 					密码：<input type="text" name="new_passwd"><br/><br/>
-					<div id="realty">
-					物业名称：<input type="text" name="realty_name"><br/><br/>
-					物业成立时间：<input type="date" name="realty_date"><br/><br/>
-					物业主页：<input type="url" name="realty_url"><br/><br/>
-					</div>
-					<input type="checkbox" id="is_realty" name="user_type" value="1" onchange="change_vis()"/>我是物业<br/><br/>
-					<input type="submit" value="注册">
-					
+					<input type="checkbox" name="user_type" />我是物业<br/><br/>
+					<input type="submit" value="注册"> 
 				</div>
 				<div class="tab-pane fade" id="signin">
-					<form name="signin" method="post" action="">
+					<form name="signin" method="post" onsubmit="return check_existance(this);" action="">
 					<br/>
-					电子邮件：<input type="email" name="exist_email"><br/><br/>
+					电子邮件：<input type="text" name="exist_email"><br/><br/>
 					密码：<input type="text" name="exist_passwd"><br/><br/>
-					<input type="checkbox" name="user_type" value="1" />我是物业<br/><br/>
-					<input type="submit" value="登录">
-					<div 
+					<input type="submit" value="登录"> 
 				</div>
 			</div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
 		</div>
 	</div>
 </div>
 <script>
    $(function () {
       $('#myTab li:eq(1) a').tab('show');
-	  $("#realty").hide();
    });
-   
    function validate_signup_form(thisform){
 		with (thisform){
 			if (validate_required(new_email,"请输入邮箱")==false){
 				email.focus();
 				return false
 			}
+			if (validate_email(new_email,"请输入正确的邮箱")==false){
+				email.focus();
+				return false
+			}
 			if (validate_required(new_passwd,"请输入密码")==false){
 				passwd.focus();
+				return false
+			}
+			if (is_join && validate_required(user_type,"请指明用户类型")==false){
+				user_type.focus();
 				return false
 			}
 		}
@@ -78,16 +76,18 @@
 		}
 	}
 	
-	function change_vis(){  
-	//alert($('#is_realty').is(':checked'));
-		if ($('#is_realty').is(':checked') == true) { 
-			$("#realty").show();
-		} else{
-			$("#realty").hide();
+   function validate_email(field,alerttxt){
+		with (field){
+			apos=value.indexOf("@")
+			dotpos=value.lastIndexOf(".")
+			if (apos<1||dotpos-apos<2) {
+				alert(alerttxt);
+				return false
+			}else {
+				return true
+			}
 		}
-   }
-   
-	
+	}
 </script>
 
 </body>
