@@ -60,19 +60,17 @@
 		var info = $("#search").serialize();
 		$.post("/search", info,
 			function(data){
-				alert("search result"+data);
+				//alert("search result"+data);
+				window.location.reload(); 
 				draw_table(data);
 			});
 	}
 	function draw_table(data){
 		var temp = JSON.parse(data);
-		alert(temp.length);
 		for(var i=0;i<temp.length;i++){
 			var info = temp[i];
-			alert(info);
 			var tbl = document.getElementById("search_res");
 			var obj = tbl.insertRow(tbl.rows.length);
-			alert(1);
 			obj.insertCell().innerHTML = info.houseid;
 			obj.insertCell().innerHTML = info.env_city;
 			obj.insertCell().innerHTML = info.env_street;
