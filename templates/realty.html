@@ -71,15 +71,16 @@
 	arr=document.cookie.match(reg);
 	var quote=new RegExp("\"","g")
 	document.getElementById("user_email").innerHTML = unescape(arr[2].replace(quote,""));
-	
+
 	function list_houses(){
 		//alert("here");
 		$.get("/list", {},
 			function(data){
 				alert("Data Loaded: " + data);
+				draw_table(data);
 			});
 	}
-	
+
 	function draw_table(data){
 		var temp = JSON.parse(data);
 		for(var i=0;i<temp.length;i++){
@@ -98,17 +99,16 @@
 			var add_fav = "<a href=\"#\" onclick=\"change_avail("+info.houseid+","+info.availability+")\">更改可租性</a>";
 			obj.insertCell().innerHTML = add_fav;
 		}
-    }	
-	
+    }
+
 	function change_avail(house, availability){
-		$.post("/changeAvail", {"house_id":house, "avail":(1-availability)},
+		$.post("/changeAvail", {"house_id":house, "avail":(1-parseInt(availability))},
 			function(res){
 				//alert(res + 0)
 				if(res=='success')
 					alert("更改成功");
 				else
 					alert('something happens');
-				}
 			});
 	}
 </script>

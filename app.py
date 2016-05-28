@@ -258,7 +258,7 @@ def listRealty():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
         return 'signin'#redirect(url_for('index'))
-    qstr = 'select * from Realty where realty_email = "' + user_email +'"'
+    qstr = 'select * from House where realty_email = "' + user_email +'"'
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute(qstr)
@@ -298,10 +298,16 @@ def changeAvail():
     avail = request.form.get('avail', None)
     conn = mysql.connect()
     cursor = conn.cursor()
-    qstr = 'update House set availability = ' + avail ' where houseid = ' + houseid ;
+    qstr = 'update House set availability = ' + avail + ' where houseid = ' + houseid ;
+    print qstr
     cursor.execute(qstr)
-    #data = cursor.fetchall()
-    return 'success'
+    data = cursor.fetchall()
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        return 'success'
+    else:
+        return 'failed'
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))

@@ -36,7 +36,7 @@ create table House
    realty_email         varchar(64) not null,
    env_city             varchar(64) not null,
    env_street           varchar(64) not null,
-   availability         bool not null,
+   availability         int not null,
    rent                 int not null,
    bedroom              int not null,
    bathroom             int not null,
