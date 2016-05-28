@@ -67,6 +67,10 @@
 	</div>
 </div>
 <script>
+	var arr,reg=new RegExp("(^| )user_email=([^;]*)(;|$)");
+	arr=document.cookie.match(reg);
+	document.getElementById("user_email").innerHTML = unescape(arr[2].replace("\"",""));
+	
 	function list_houses(){
 		//alert("here");
 		$.post("./list", { renter_email: "John"},

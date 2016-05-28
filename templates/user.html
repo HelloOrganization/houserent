@@ -42,41 +42,28 @@
 			</form>
 			<br/><br/>
 			<table id="search_res" class="table">
-				<thead>
-					<tr>
-						<th>房屋编号</th>
-						<th>城市</th>
-						<th>街道</th>
-						<th>每月房租</th>
-						<th>卧室数</th>
-						<th>浴室数</th>
-						<th>所在楼层</th>
-						<th>面积</th>
-						<th>周边信息</th>
-						<th>物业信息</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody id="table_body">
-				</tbody>
 			</table>
 	</div>
 </div>
 <script>
 	var arr,reg=new RegExp("(^| )user_email=([^;]*)(;|$)");
 	arr=document.cookie.match(reg);
-	document.getElementById("user_email").innerHTML = unescape(arr[2]);
+	document.getElementById("user_email").innerHTML = unescape(arr[2].replace("\"",""));
 	
 	function submit_form(){
 		var info = $("#search").serialize();
 		$.post("/search", info,
 			function(data){
 				//alert("search result"+data);
-				//window.location.reload();
-				document.getElementById("table_body").innerHTML = "";
+				init_table();
 				draw_table(data);
 			});
 	}
+	
+	function init_table(data){
+		document.getElementById("search_res").innerHTML="<thead><tr>						<th>房屋编号</th><th>城市</th><th>街道</th><th>每月房租</th><th>卧室数</th>				<th>浴室数</th><th>所在楼层</th><th>面积</th><th>周边信息</th><th>物业信息</th>			<th>操作</th></tr></thead><tbody></tbody>";
+	}
+	
 	function draw_table(data){
 		var temp = JSON.parse(data);
 		for(var i=0;i<temp.length;i++){
