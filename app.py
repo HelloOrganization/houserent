@@ -8,6 +8,7 @@ import time
 import random
 import datetime
 import json
+import re
 
 from flask import Flask, request, session, escape
 from flask import render_template, send_file, make_response, redirect, url_for
@@ -55,10 +56,15 @@ def user():
 def realty():
     return render_template('realty.html')
 
+def hasQuote(s):
+    return  len(re.findall('[\'"]', s)) > 0
+
 @app.route('/signUp', methods=['POST'])
 def signUp():
     user_email = request.form.get('new_email', None)
     user_pswd = request.form.get('new_passwd', None)
+    if hasQuote(user_email) or hasQuote(user_pswd):
+        return 'Bad email or password'
     user_enter_date = str(datetime.date.today())
     user_type = request.form.get('user_type', '0')
     if user_type == '1':
@@ -84,21 +90,25 @@ def signUp():
                 resp = redirect(url_for('realty'))
             resp.set_cookie('user_email', user_email)
             return resp
-        return 'Failed'
+        return 'Email has been registered!'
     return 'Failed'
 
 @app.route('/signIn', methods=['POST'])
 def signIn():
     user_email = request.form.get('exist_email', None)
     user_pswd = request.form.get('exist_passwd', None)
+    if hasQuote(user_email) or hasQuote(user_pswd):
+        return 'Bad email or password'
     user_type = request.form.get('user_type', '0')
     if user_email and user_pswd:
         conn = mysql.connect()
         cursor = conn.cursor()
         if user_type == '0':
-            cursor.execute('select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";')
+            qstr = 'select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";'
         else:
-            cursor.execute('select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";')
+            qstr = 'select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";'
+        print qstr
+        cursor.execute(qstr)
         data = cursor.fetchall()
         conn.close()
         if len(data) == 0:
@@ -133,6 +143,8 @@ def addHouse():
     bathroom = request.form.get('bathroom', None)
     house_floor = request.form.get('house_floor', None)
     house_size = request.form.get('house_size', None)
+    if hasQuote(city) or hasQuote(street):
+        return 'Bad city or street'
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.callproc('sp_addHouse',(user_email, city, street, 1, rent, bedroom, bathroom, house_floor, house_size))
@@ -141,9 +153,9 @@ def addHouse():
         conn.commit()
         conn.close()
         #resp = redirect(url_for('index'))
-        return 'OK'
+        return 'success'
     else:
-        return 'Failed'
+        return 'failed'
 
 def parseNum(num):
     if num != '#':
@@ -189,7 +201,6 @@ def search():
     cursor = conn.cursor()
     cursor.execute(qstr)
     res = cursor.fetchall()
-    conn.close()
     print res
     columns = [desc[0] for desc in cursor.description]
     print columns
@@ -205,6 +216,7 @@ def search():
     # for h in saved:
     ret = json.dumps(rows)
     print ret
+    conn.close()
     return ret
 
 @app.route('/save', methods=['POST'])
