@@ -153,7 +153,7 @@ def addHouse():
         conn.commit()
         conn.close()
         #resp = redirect(url_for('index'))
-        return 'success'
+        return redirect(url_for('realty'))
     else:
         return 'failed'
 
@@ -194,7 +194,7 @@ def search():
     op, n = parseNum(bathroom)
     if op != '':
         qstr += ' and bathroom' + op + n
-    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street;'
+    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street'
     qstr += ' and H.availability = 1'
     print qstr
     conn = mysql.connect()
