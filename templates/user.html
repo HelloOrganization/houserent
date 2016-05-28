@@ -22,18 +22,18 @@
 			<h3>设置条件进行搜索，或查看<a href="/favorite">我的收藏</a></h3>
 			<form name="search" id="search" method="post">
 			<br/>
-				<input type="text" name="city" placeholder="城市">&nbsp;
-				<input type="number" name="min_rent" placeholder="月租金最小值" min="1" max="100000">&nbsp;
-				<input type="number" name="max_rent" placeholder="月租金最大值" min="1" max="100000">&nbsp;
+				<input type="text" id="city" name="city" placeholder="城市">&nbsp;
+				<input type="number" id="min_rent" name="min_rent" placeholder="月租金最小值" min="1" max="100000">&nbsp;
+				<input type="number" id="max_rent" name="max_rent" placeholder="月租金最大值" min="1" max="100000">&nbsp;
 				卧室：
-				<select name="bedroom">
+				<select name="bedroom" id="bedroom">
 					<option>#</option>
 					<option>1</option>
 					<option>2</option>
 					<option>3+</option>
 				</select>&nbsp;
 				浴室：
-				<select name="bathroom">
+				<select name="bathroom" id="bathroom">
 					<option>#</option>
 					<option>1</option>
 					<option>2</option>
@@ -67,9 +67,8 @@
 		/*if(validate_form($("#search") == false)
 			return false;
 */
-		var info = $("#search").serialize();
-		info = decodeURIComponent(info,true);
-		$.post("/search", info,
+		//var info = $("#search").serialize();
+		$.post("/search", {"city":$("#city").attr("value"), "min_rent":$("#min_rent").attr("value"), "max_rent":$("#max_rent").attr("value"), "bedroom":$("#bedroom").attr("value"), "bathroom":$("#bathroom").attr("value")},
 			function(data){
 				//alert("search result"+data);
 				init_table();
