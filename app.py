@@ -125,7 +125,7 @@ def signOut():
 def addHouse():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
-        return redirect(url_for('signIn'))
+        return redirect(url_for('index'))
     city = request.form.get('city', None)
     street = request.form.get('street', None)
     rent = request.form.get('rent', None)
@@ -140,7 +140,7 @@ def addHouse():
     if len(data) == 0:
         conn.commit()
         conn.close()
-        #resp = redirect(url_for(''))
+        #resp = redirect(url_for('index'))
         return 'OK'
     else:
         return 'Failed'
@@ -161,7 +161,7 @@ def parseNum(num):
 def search():
     # user_email = request.cookies.get('user_email', None)
     # if user_email == None:
-    #     return redirect(url_for('signIn'))
+    #     return redirect(url_for('index'))
     city = request.form.get('city', '')
     min_rent = str(request.form.get('min_rent', -1))
     max_rent = str(request.form.get('max_rent', 100000))
@@ -210,7 +210,7 @@ def search():
 def save():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
-        return redirect(url_for('signIn'))
+        return '-1'#redirect(url_for('index'))
     houseid = request.form.get('house_id', None)
     if houseid == None:
         return 'No house'
@@ -221,9 +221,9 @@ def save():
     if len(data) == 0:
         conn.commit()
         conn.close()
-        return 1
+        return '1'
     else:
-        return 0
+        return '0'
 
 
 if __name__ == '__main__':
