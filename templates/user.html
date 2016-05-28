@@ -10,10 +10,7 @@
 <body>
 <div class="container">
 	<div class="row" >
-		<div class="col-md-2">
-		</div>
-		<div class="col-md-8">
-			<h1>欢迎，<span name="user_email">XXX</span>！</h1><br/>
+			<h1>欢迎，<span id="user_email"></span>！</h1><br/>
 			<h3>设置条件进行搜索，或查看<a href="#">我的收藏</a></h3>
 			<form name="search" id="search" method="post" action="">
 			<br/>
@@ -33,12 +30,29 @@
 					<option>1</option>
 					<option>2</option>
 					<option>3+</option>
-				</select><br/><br/>
+				</select>&nbsp;
 				<input type="button" id="search" value="搜索" onclick="submit_form()">
 			</form>
-		</div>
-		<div class="col-md-2">
-		</div>
+			<br/><br/>
+			<table id="search_res" class="table">
+				<thead>
+					<tr>
+						<th>房屋编号</th>
+						<th>城市</th>
+						<th>街道</th>
+						<th>每月房租</th>
+						<th>卧室数</th>
+						<th>浴室数</th>
+						<th>所在楼层</th>
+						<th>面积</th>
+						<th>周边信息</th>
+						<th>物业信息</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
 	</div>
 </div>
 <script>
@@ -47,6 +61,35 @@
 		$.post("/search", info,
 			function(data){
 				alert("search result"+data);
+				draw_table(data);
+			});
+	}
+	function draw_table(data){
+		for(var i=0;i<data.length;i++){
+			var info = eval(data[i]);
+			var tbl = document.getElementById("search_res");
+			var obj = tbl.insertRow(tbl.rows.length);
+			obj.insertCell().innerHTML = info.houseid;
+			obj.insertCell().innerHTML = info.env_city;
+			obj.insertCell().innerHTML = info.env_street;
+			obj.insertCell().innerHTML = info.rent;
+			obj.insertCell().innerHTML = info.bedroom;
+			obj.insertCell().innerHTML = info.bathroom;
+			obj.insertCell().innerHTML = info.house_floor;
+			obj.insertCell().innerHTML = info.house_size;
+			obj.insertCell().innerHTML = "附近超市个数："+info.nearbymarket+"<br/>附近学校个数："+info.nearbyschool+"<br/>治安指数："+info.safety;
+			obj.insertCell().innerHTML = "物业名称："+info.realty_name+"<br/>物业邮箱："+info.realty_email+"<br/>物业主页："+info.website;
+			var add_fav = "<a onclick=\"change_fav("+info.house_id+")\">收藏</a>";
+			obj.insertCell().innerHTML = add_fav;
+		}
+    }
+	function change_fav(house){
+		$.post("/save", {"house_id":house},
+			function(res){
+				if(res==1)
+					alert("收藏成功");
+				else
+					alert("之前已经收藏过了");
 			});
 	}
 </script>
