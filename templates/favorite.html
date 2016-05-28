@@ -19,7 +19,7 @@
 			<h1>欢迎使用简易租房信息网站！</h1>
 			<br/>
 			<h3>已收藏的房屋信息</h3>
-				<table class="table">
+				<table class="table" id="my_fav">
 					<thead>
 						<tr>
 							<th>房屋编号</th>
@@ -44,7 +44,34 @@
 <script>
 	var arr,reg=new RegExp("(^| )user_email=([^;]*)(;|$)");
 	arr=document.cookie.match(reg);
-	document.getElementById("user_email").innerHTML = unescape(arr[2].replace("\"",""));
+	var quote=new RegExp("\"","g")
+	document.getElementById("user_email").innerHTML = unescape(arr[2].replace(quote,""));
+	
+	$.get("/listfavorite", {}, function(data){
+		draw_table(data);
+		});
+	
+	function draw_table(data){
+		var temp = JSON.parse(data);
+		for(var i=0;i<temp.length;i++){
+			var info = temp[i];
+			var tbl = document.getElementById("my_fav");
+			var obj = tbl.insertRow(tbl.rows.length);
+			obj.insertCell().innerHTML = info.houseid;
+			obj.insertCell().innerHTML = info.env_city;
+			obj.insertCell().innerHTML = info.env_street;
+			obj.insertCell().innerHTML = info.rent;
+			obj.insertCell().innerHTML = info.bedroom;
+			obj.insertCell().innerHTML = info.bathroom;
+			obj.insertCell().innerHTML = info.house_floor;
+			obj.insertCell().innerHTML = info.house_size;
+			obj.insertCell().innerHTML = "附近超市个数："+info.nearbymarket+"<br/>附近学校个数："+info.nearbyschool+"<br/>治安指数："+info.safety;
+			obj.insertCell().innerHTML = "物业名称："+info.realty_name+"<br/>物业邮箱："+info.realty_email+"<br/>物业主页："+info.website;
+			obj.insertCell().innerHTML = info.availability;
+			var add_fav = "<a onclick=\"change_fav("+info.houseid+")\">收藏</a>";
+			obj.insertCell().innerHTML = add_fav;
+		}
+    }	
 </script>
 </body>
 </html>

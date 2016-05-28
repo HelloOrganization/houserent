@@ -18,7 +18,7 @@
 	<div class="row" >
 			<h1>欢迎使用简易租房信息网站！</h1>
 			<br/>
-			<h3>设置条件进行搜索，或查看<a href="#">我的收藏</a></h3>
+			<h3>设置条件进行搜索，或查看<a href="/favorite">我的收藏</a></h3>
 			<form name="search" id="search" method="post" action="">
 			<br/>
 				<input type="text" name="city" placeholder="城市">&nbsp;
@@ -48,7 +48,8 @@
 <script>
 	var arr,reg=new RegExp("(^| )user_email=([^;]*)(;|$)");
 	arr=document.cookie.match(reg);
-	document.getElementById("user_email").innerHTML = unescape(arr[2].replace("\"",""));
+	var quote=new RegExp("\"","g")
+	document.getElementById("user_email").innerHTML = unescape(arr[2].replace(quote,""));
 	
 	function submit_form(){
 		var info = $("#search").serialize();
