@@ -8,9 +8,16 @@
 	<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-default">
+	<div class="container">
+		<a href="/signOut" class="navbar-brand navbar-right">登出</a>
+		<a href="#"class="navbar-brand navbar-right">欢迎，<span id="user_email"></span>！|</a>
+	</div>
+</nav>
 <div class="container">
 	<div class="row" >
-			<h1>欢迎，<span id="user_email"></span>！</h1><br/>
+			<h1>欢迎使用简易租房信息网站！</h1>
+			<br/>
 			<h3>设置条件进行搜索，或查看<a href="#">我的收藏</a></h3>
 			<form name="search" id="search" method="post" action="">
 			<br/>
@@ -50,18 +57,23 @@
 						<th>操作</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="table_body">
 				</tbody>
 			</table>
 	</div>
 </div>
 <script>
+	var arr,reg=new RegExp("(^| )user_email=([^;]*)(;|$)");
+	arr=document.cookie.match(reg);
+	document.getElementById("user_email").innerHTML = unescape(arr[2]);
+	
 	function submit_form(){
 		var info = $("#search").serialize();
 		$.post("/search", info,
 			function(data){
 				//alert("search result"+data);
 				//window.location.reload();
+				document.getElementById("table_body").innerHTML = "";
 				draw_table(data);
 			});
 	}
