@@ -46,11 +46,11 @@
 	arr=document.cookie.match(reg);
 	var quote=new RegExp("\"","g")
 	document.getElementById("user_email").innerHTML = unescape(arr[2].replace(quote,""));
-	
+
 	$.get("/listfavorite", {}, function(data){
 		draw_table(data);
 		});
-	
+
 	function draw_table(data){
 		var temp = JSON.parse(data);
 		for(var i=0;i<temp.length;i++){
@@ -65,21 +65,21 @@
 			obj.insertCell().innerHTML = info.bathroom;
 			obj.insertCell().innerHTML = info.house_floor;
 			obj.insertCell().innerHTML = info.house_size;
-			obj.insertCell().innerHTML = "附近超市个数："+info.nearbymarket+"<br/>附近学校个数："+info.nearbyschool+"<br/>治安指数："+info.safety;
+			obj.insertCell().innerHTML = "附近超市个数："+info.env_nearbymarket+"<br/>附近学校个数："+info.env_nearbyschool+"<br/>治安指数："+info.env_safety;
 			obj.insertCell().innerHTML = "物业名称："+info.realty_name+"<br/>物业邮箱："+info.realty_email+"<br/>物业主页："+info.website;
 			obj.insertCell().innerHTML = info.availability;
 			var add_fav = "<a href=\"#\" onclick=\"undo_fav("+info.houseid+")\">取消收藏</a>";
 			obj.insertCell().innerHTML = add_fav;
 		}
-    }	
-	
+    }
+
 	function undo_fav(house){
 		$.post("/unsave", {"house_id":house},
 			function(res){
 				//alert(res + 0)
 				if(res=='success'){
 					alert("取消成功");
-					window.location.reload(); 
+					window.location.reload();
 				}
 				else
 					alert("something happens");

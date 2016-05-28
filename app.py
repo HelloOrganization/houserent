@@ -9,6 +9,7 @@ import random
 import datetime
 import json
 import re
+import codecs
 
 from flask import Flask, request, session, escape
 from flask import render_template, send_file, make_response, redirect, url_for
@@ -147,15 +148,18 @@ def addHouse():
         return 'Bad city or street'
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.callproc('sp_addHouse',(user_email, city, street, 1, rent, bedroom, bathroom, house_floor, house_size))
-    data = cursor.fetchall()
-    if len(data) == 0:
-        conn.commit()
-        conn.close()
-        #resp = redirect(url_for('index'))
-        return redirect(url_for('realty'))
-    else:
-        return 'failed'
+    try:
+        cursor.callproc('sp_addHouse',(user_email, city, street, 1, rent, bedroom, bathroom, house_floor, house_size))
+        data = cursor.fetchall()
+        if len(data) == 0:
+            conn.commit()
+            conn.close()
+            #resp = redirect(url_for('index'))
+            return redirect(url_for('realty'))
+        else:
+            return 'failed'
+    except Exception, e:
+        return 'Failed, since you are not a realty'
 
 def parseNum(num):
     if num != '#':
@@ -174,9 +178,10 @@ def search():
     # user_email = request.cookies.get('user_email', None)
     # if user_email == None:
     #     return redirect(url_for('index'))
-    print '***search'
-    city = request.form.get('city', None)
-    print city
+    #print '***search'
+    #print request.form.get('city')
+    city = request.form.get('city', '')
+    #print city
     min_rent = str(request.form.get('min_rent', -1))
     max_rent = str(request.form.get('max_rent', 100000))
     if min_rent == '':
@@ -196,7 +201,7 @@ def search():
     op, n = parseNum(bathroom)
     if op != '':
         qstr += ' and bathroom' + op + n
-    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street'
+    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = E.env_street'
     qstr += ' and H.availability = 1'
     print qstr
     conn = mysql.connect()

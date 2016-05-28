@@ -68,7 +68,25 @@
 			return false;
 */
 		//var info = $("#search").serialize();
-		$.post("/search", {"city":$("#city").attr("value"), "min_rent":$("#min_rent").attr("value"), "max_rent":$("#max_rent").attr("value"), "bedroom":$("#bedroom").attr("value"), "bathroom":$("#bathroom").attr("value")},
+		//alert($("#city").val());
+		var info = {"city":$("#city").val(), "min_rent":$("#min_rent").val(), "max_rent":$("#max_rent").val(), "bedroom":$("#bedroom").val(), "bathroom":$("#bathroom").val()}
+		//alert(info.min_rent);
+/*		$.ajax({
+			type: "post",
+    		url: "/search",
+    		contentType: "contentType:application/json; charset=UTF-8  ",
+    		dataType: "json",
+    		data: info,
+    		success: function(data){
+    			alert(data);
+    			init_table();
+				draw_table(data);
+    		}
+        });*/
+        $.ajaxSetup({
+			contentType: "application/x-www-form-urlencoded; charset=utf-8"
+		});
+		$.post("/search", info,
 			function(data){
 				//alert("search result"+data);
 				init_table();
@@ -94,7 +112,7 @@
 			obj.insertCell().innerHTML = info.bathroom;
 			obj.insertCell().innerHTML = info.house_floor;
 			obj.insertCell().innerHTML = info.house_size;
-			obj.insertCell().innerHTML = "附近超市个数："+info.nearbymarket+"<br/>附近学校个数："+info.nearbyschool+"<br/>治安指数："+info.safety;
+			obj.insertCell().innerHTML = "附近超市个数："+info.env_nearbymarket+"<br/>附近学校个数："+info.env_nearbyschool+"<br/>治安指数："+info.env_safety;
 			obj.insertCell().innerHTML = "物业名称："+info.realty_name+"<br/>物业邮箱："+info.realty_email+"<br/>物业主页："+info.website;
 			var add_fav = "<a href=\"#\" onclick=\"change_fav("+info.houseid+")\">收藏</a>";
 			obj.insertCell().innerHTML = add_fav;
