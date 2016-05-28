@@ -253,7 +253,7 @@ def unsave():
     else:
         return 'failed'
 
-@app.route('/list', methods=['POST'])
+@app.route('/list', methods=['GET'])
 def listRealty():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
@@ -289,7 +289,19 @@ def listfavorite():
     rows = [dict(zip(columns, r)) for r in res]
     return json.dumps(rows)
 
-#@app.route('/change')
+@app.route('/changeAvail', methods=['POST'])
+def changeAvail():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return 'signin'#redirect(url_for('index'))
+    houseid = request.form.get('house_id', None)
+    avail = request.form.get('avail', None)
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    qstr = 'update House set availability = ' + avail ' where houseid = ' + houseid ;
+    cursor.execute(qstr)
+    #data = cursor.fetchall()
+    return 'success'
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
