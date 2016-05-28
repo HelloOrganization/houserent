@@ -211,7 +211,7 @@ def save():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
         return redirect(url_for('signIn'))
-    houseid = request.form.get('houseid', None)
+    houseid = request.form.get('house_id', None)
     if houseid == None:
         return 'No house'
     conn = mysql.connect()
