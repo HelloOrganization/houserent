@@ -117,7 +117,7 @@ def signOut():
     # remove the username from the session if it's there
     # session.pop('user_email', None)
     resp = redirect(url_for('index'))
-    resp.set_cookie('user_email', None)
+    resp.set_cookie('user_email', '', expires=0)
     return resp
 
 
@@ -183,6 +183,7 @@ def search():
     if op != '':
         qstr += ' and bathroom' + op + n
     qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street;'
+    qstr += ' and H.availability = 1'
     print qstr
     conn = mysql.connect()
     cursor = conn.cursor()
@@ -210,29 +211,35 @@ def search():
 def save():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
-        return '-1'#redirect(url_for('index'))
+        return 'signin'#redirect(url_for('index'))
     houseid = request.form.get('house_id', None)
     if houseid == None:
-        return 'No house'
+        return 'nohouse'
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.callproc('sp_save',(user_email, houseid))
-    data = cursor.fetchall()
-    if len(data) == 0:
-        conn.commit()
+    try:
+        cursor.callproc('sp_save',(user_email, houseid))
+        data = cursor.fetchall()
+        print data
+        if len(data) == 0:
+            conn.commit()
+            conn.close()
+            return 'success'
+        else:
+            conn.close()
+            return 'already'
+    except Exception, e:
         conn.close()
-        return '1'
-    else:
-        return '0'
+        return 'invalid user'
 
 @app.route('/unsave', methods=['POST'])
 def unsave():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
-        return '-1'#redirect(url_for('index'))
+        return 'signin'#redirect(url_for('index'))
     houseid = request.form.get('house_id', None)
     if houseid == None:
-        return 'No house'
+        return 'nohouse'
     conn = mysql.connect()
     cursor = conn.cursor()
     qstr = 'delete from Save where renter_email = "' + user_email + '" and houseid = ' + houseid ;
@@ -242,9 +249,34 @@ def unsave():
     if len(data) == 0:
         conn.commit()
         conn.close()
-        return '1'
+        return 'success'
     else:
-        return '0'
+        return 'failed'
+
+@app.route('/list', methods=['POST'])
+def listRealty():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return 'signin'#redirect(url_for('index'))
+    qstr = 'select * from Realty where realty_email = "' + user_email +'"'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute(qstr)
+    res = cursor.fetchall()
+    conn.close()
+    print res
+    columns = [desc[0] for desc in cursor.description]
+    print columns
+    rows = [dict(zip(columns, r)) for r in res]
+    return json.dumps(rows)
+
+@app.route('/favorite', methods=['POST'])
+def favorite():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return 'signin'#redirect(url_for('index'))
+    qstr = 'select R.* from Save as S, House as H, Realty as R, Environment as E'
+    qstr += 'where S.renter_email = "' + user_email + '" and S.houseid = H.houseid '
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))

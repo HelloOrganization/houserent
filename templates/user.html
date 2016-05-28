@@ -88,14 +88,16 @@
 	function change_fav(house){
 		$.post("/save", {"house_id":house},
 			function(res){
-				alert(res + 0)
-				if(res=='1')
+				//alert(res + 0)
+				if(res=='success')
 					alert("收藏成功");
-				else if (res=='0')
+				else if (res=='already')
 					alert("之前已经收藏过了");
-				else if (res == '-1'){
+				else if (res == 'signin'){
 					alert('请先登录')
 					window.location.pathname = '/'
+				} else if (res == 'invalid user'){
+					alert('您作为物业，不能收藏')
 				}
 			});
 	}
