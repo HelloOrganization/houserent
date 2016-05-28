@@ -4,14 +4,14 @@
 /*==============================================================*/
 
 drop table if exists Save;
+drop table if exists House;
 
 drop table if exists Environment;
 
-drop table if exists House;
+drop table if exists Renter;
 
 drop table if exists Realty;
 
-drop table if exists Renter;
 
 
 /*==============================================================*/

@@ -31,7 +31,7 @@
 					<option>2</option>
 					<option>3+</option>
 				</select>&nbsp;
-				<input type="button" id="search" value="搜索" onclick="submit_form()"> 
+				<input type="button" id="search" value="搜索" onclick="submit_form()">
 			</form>
 			<br/><br/>
 			<table id="search_res" class="table">
@@ -52,7 +52,7 @@
 				</thead>
 				<tbody>
 				</tbody>
-			</table>		
+			</table>
 	</div>
 </div>
 <script>
@@ -63,17 +63,21 @@ alert(1);
 	
 	function submit_form(){
 		var info = $("#search").serialize();
-		$.post("/search", info, 
+		$.post("/search", info,
 			function(data){
 				alert("search result"+data);
 				draw_table(data);
 			});
 	}
 	function draw_table(data){
-		for(var i=0;i<data.length;i++){
-			var info = eval(data[i]);
-			var tbl = document.getElementById("search_res"); 
+		var temp = JSON.parse(data);
+		alert(temp.length);
+		for(var i=0;i<temp.length;i++){
+			var info = temp[i];
+			alert(info);
+			var tbl = document.getElementById("search_res");
 			var obj = tbl.insertRow(tbl.rows.length);
+			alert(1);
 			obj.insertCell().innerHTML = info.houseid;
 			obj.insertCell().innerHTML = info.env_city;
 			obj.insertCell().innerHTML = info.env_street;
@@ -89,7 +93,7 @@ alert(1);
 		}
     }
 	function change_fav(house){
-		$.post("/save", {"house_id":house}, 
+		$.post("/save", {"house_id":house},
 			function(res){
 				if(res==1)
 					alert("收藏成功");

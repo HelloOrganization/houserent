@@ -7,9 +7,10 @@ import os
 import time
 import random
 import datetime
+import json
 
-from flask import Flask, request
-from flask import render_template, send_file, make_response, redirect
+from flask import Flask, request, session, escape
+from flask import render_template, send_file, make_response, redirect, url_for
 from flask.ext.mysql import MySQL
 
 DEBUG = True
@@ -47,25 +48,182 @@ def teardown_request(exception):
 def index():
     return render_template('index.html')
 
+@app.route('/user', methods=['GET'])
+def user():
+    return render_template('user.html')
+@app.route('/realty', methods=['GET'])
+def realty():
+    return render_template('realty.html')
+
 @app.route('/signUp', methods=['POST'])
 def signUp():
     user_email = request.form.get('new_email', None)
     user_pswd = request.form.get('new_passwd', None)
     user_enter_date = str(datetime.date.today())
-    user_type = request.form.get('user_type', None)
+    user_type = request.form.get('user_type', '0')
+    if user_type == '1':
+        print 'yes'
+        realty_name = request.form.get('realty_name', None)
+        realty_date = request.form.get('realty_date', None)
+        realty_url = request.form.get('realty_url', None)
     print 'signUp:', user_email, user_pswd, user_enter_date, user_type
     if user_email and user_pswd:
-        if user_type == None:
-            user_type = 0
         conn = mysql.connect()
         cursor = conn.cursor()
-        cursor.callproc('sp_signUp',(user_email, user_pswd, user_enter_date, user_type))
+        if user_type == '0':
+            cursor.callproc('sp_renterSignUp',(user_email, user_pswd, user_enter_date))
+        else:
+            cursor.callproc('sp_realtySignUp',(user_email, user_pswd, realty_name, realty_date, realty_url, user_enter_date))
         data = cursor.fetchall()
-        if len(data) is 0:
+        if len(data) == 0:
             conn.commit()
-            return 'Ok'
+            conn.close()
+            if user_type == '0':
+                resp = redirect(url_for('user'))
+            else:
+                resp = redirect(url_for('realty'))
+            resp.set_cookie('user_email', user_email)
+            return resp
         return 'Failed'
     return 'Failed'
+
+@app.route('/signIn', methods=['POST'])
+def signIn():
+    user_email = request.form.get('exist_email', None)
+    user_pswd = request.form.get('exist_passwd', None)
+    user_type = request.form.get('user_type', '0')
+    if user_email and user_pswd:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        if user_type == '0':
+            cursor.execute('select 1 from Renter where renter_email = "' + user_email + '" and renter_pswd = "' + user_pswd + '";')
+        else:
+            cursor.execute('select 1 from Realty where realty_email = "' + user_email + '" and realty_pswd = "' + user_pswd + '";')
+        data = cursor.fetchall()
+        conn.close()
+        if len(data) == 0:
+            return 'Sign in failed'
+        else:
+            if user_type == '0':
+                resp = redirect(url_for('user'))
+            else:
+                resp = redirect(url_for('realty'))
+            resp.set_cookie('user_email', user_email)
+            return resp
+    return 'Sign in failed'
+
+@app.route('/signOut', methods=['GET'])
+def signOut():
+    # remove the username from the session if it's there
+    # session.pop('user_email', None)
+    resp = redirect(url_for('index'))
+    resp.set_cookie('user_email', None)
+    return resp
+
+
+@app.route('/addHouse', methods=['POST'])
+def addHouse():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return redirect(url_for('signIn'))
+    city = request.form.get('city', None)
+    street = request.form.get('street', None)
+    rent = request.form.get('rent', None)
+    bedroom = request.form.get('bedroom', None)
+    bathroom = request.form.get('bathroom', None)
+    house_floor = request.form.get('house_floor', None)
+    house_size = request.form.get('house_size', None)
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.callproc('sp_addHouse',(user_email, city, street, 1, rent, bedroom, bathroom, house_floor, house_size))
+    data = cursor.fetchall()
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        #resp = redirect(url_for(''))
+        return 'OK'
+    else:
+        return 'Failed'
+
+def parseNum(num):
+    if num != '#':
+        lx = len(num)
+        n = num
+        op = ' = '
+        if num[lx - 1] == '+' :
+            n = num[:(lx - 1)]
+            op = ' >= '
+        return  op, n
+    else:
+        return '', ''
+
+@app.route('/search', methods=['POST'])
+def search():
+    # user_email = request.cookies.get('user_email', None)
+    # if user_email == None:
+    #     return redirect(url_for('signIn'))
+    city = request.form.get('city', '')
+    min_rent = str(request.form.get('min_rent', -1))
+    max_rent = str(request.form.get('max_rent', 100000))
+    if min_rent == '':
+        min_rent = '-1'
+    if max_rent == '':
+        max_rent = '100000'
+    print "*", min_rent, "*", max_rent, "*"
+    bedroom = request.form.get('bedroom', '')
+    bathroom = request.form.get('bathroom', '')
+    qstr  = 'select H.*, R.realty_name, R.website, E.env_nearbymarket, E.env_nearbyschool, E.env_safety'
+    qstr += ' from House as H, Realty as R, Environment as E where rent >= ' + min_rent + ' and rent <= ' + max_rent
+    if city != '':
+        qstr += ' and city = "' + city + '"'
+    op, n = parseNum(bedroom)
+    if op != '':
+        qstr += ' and bedroom' + op + n
+    op, n = parseNum(bathroom)
+    if op != '':
+        qstr += ' and bathroom' + op + n
+    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street;'
+    print qstr
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute(qstr)
+    res = cursor.fetchall()
+    conn.close()
+    print res
+    columns = [desc[0] for desc in cursor.description]
+    print columns
+    rows = [dict(zip(columns, r)) for r in res]
+    # houseids = tuple([r['houseid'] for r in rows])
+    # qstr = 'select houseid from Save where houseid in ' + str(houseids) + ' and renter_email = ' + user_email
+    # cursor.execute(qstr)
+    # saved = cursor.fetchall()
+    # saved = [r for r in saved]
+    # print saved
+    # for i in range(len(rows)):
+    #     rows[i]['saved'] = False
+    # for h in saved:
+    ret = json.dumps(rows)
+    print ret
+    return ret
+
+@app.route('/save', methods=['POST'])
+def save():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return redirect(url_for('signIn'))
+    houseid = request.form.get('houseid', None)
+    if houseid == None:
+        return 'No house'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.callproc('sp_save',(user_email, houseid))
+    data = cursor.fetchall()
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':

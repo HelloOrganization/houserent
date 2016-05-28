@@ -35,7 +35,7 @@
 					</form>
 				</div>
 				<div class="tab-pane fade" id="signin">
-					<form name="signin" method="post" action="">
+					<form name="signin" method="post" action="/signIn">
 					<br/>
 					电子邮件：<input type="email" name="exist_email" required="required"><br/><br/>
 					密码：<input type="text" name="exist_passwd" required="required"><br/><br/>
@@ -54,17 +54,16 @@
       //$('#myTab li:eq(1) a').tab('show');
 	  $("#realty").hide();
    });
-   	
-	function change_vis(){  
+	function change_vis(){
 	//alert($('#is_realty').is(':checked'));
-		if ($('#is_realty').is(':checked') == true) { 
+		if ($('#is_realty').is(':checked') == true) {
 			$("#realty").show();
 		} else{
 			$("#realty").hide();
 		}
    }
-   
-	
+
+
 </script>
 
 </body>
