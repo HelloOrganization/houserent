@@ -65,10 +65,14 @@
 			});
 	}
 	function draw_table(data){
-		for(var i=0;i<data.length;i++){
-			var info = eval(data[i]);
+		var temp = JSON.parse(data);
+		alert(temp.length);
+		for(var i=0;i<temp.length;i++){
+			var info = temp[i];
+			alert(info);
 			var tbl = document.getElementById("search_res");
 			var obj = tbl.insertRow(tbl.rows.length);
+			alert(1);
 			obj.insertCell().innerHTML = info.houseid;
 			obj.insertCell().innerHTML = info.env_city;
 			obj.insertCell().innerHTML = info.env_street;

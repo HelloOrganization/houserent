@@ -204,7 +204,7 @@ def search():
     # for h in saved:
     ret = json.dumps(rows)
     print ret
-    return json.dumps(ret)
+    return ret
 
 @app.route('/save', methods=['POST'])
 def save():
