@@ -175,7 +175,7 @@ def search():
     qstr  = 'select H.*, R.realty_name, R.website, E.env_nearbymarket, E.env_nearbyschool, E.env_safety'
     qstr += ' from House as H, Realty as R, Environment as E where rent >= ' + min_rent + ' and rent <= ' + max_rent
     if city != '':
-        qstr += ' and city = "' + city + '"'
+        qstr += ' and H.env_city = "' + city + '"'
     op, n = parseNum(bedroom)
     if op != '':
         qstr += ' and bedroom' + op + n
@@ -288,6 +288,8 @@ def listfavorite():
     print columns
     rows = [dict(zip(columns, r)) for r in res]
     return json.dumps(rows)
+
+#@app.route('/change')
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
