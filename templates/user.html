@@ -19,7 +19,7 @@
 			<h1>欢迎使用简易租房信息网站！</h1>
 			<br/>
 			<h3>设置条件进行搜索，或查看<a href="/favorite">我的收藏</a></h3>
-			<form name="search" id="search" method="post" action="">
+			<form name="search" id="search" method="post">
 			<br/>
 				<input type="text" name="city" placeholder="城市">&nbsp;
 				<input type="number" name="min_rent" placeholder="月租金最小值" min="1" max="100000">&nbsp;
@@ -51,7 +51,21 @@
 	var quote=new RegExp("\"","g")
 	document.getElementById("user_email").innerHTML = unescape(arr[2].replace(quote,""));
 	
+	function validate_form(thisform){
+		var tagElements = thisform.getElementsByTagName('input');    
+		for (var i=0;i<tagElements.length;i++){  
+			if(AntiSqlValid(tagElements[i]) == false){
+				tagElements.focus();
+				return false;
+			}  
+		}
+		return true;
+	}
+	
 	function submit_form(){
+		if(validate_form($("#search") == false)
+			return false;
+			
 		var info = $("#search").serialize();
 		$.post("/search", info,
 			function(data){
