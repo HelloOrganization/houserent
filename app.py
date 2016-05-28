@@ -111,7 +111,7 @@ def signIn():
             return resp
     return 'Sign in failed'
 
-@app.route('/signOut')
+@app.route('/signOut', methods=['GET'])
 def signOut():
     # remove the username from the session if it's there
     # session.pop('user_email', None)
@@ -135,7 +135,7 @@ def parseNum(num):
 def addHouse():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
-        return 'Sign in first!'
+        return redirect(url_for('signIn'))
     city = request.form.get('city', None)
     street = request.form.get('street', None)
     rent = request.form.get('rent', None)
@@ -155,7 +155,7 @@ def addHouse():
     else:
         return 'Failed'
 
-@app.route('/search')
+@app.route('/search', methods=['POST'])
 def search():
     city = request.form.get('city', None)
     min_rent = str(request.form.get('min_rent', -1))
@@ -177,6 +177,13 @@ def search():
     cursor.execute(qstr)
     res = cursor.fetchall()
     return res
+
+@app.route('/save', methods=[])
+def save():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return redirect(url_for('signIn'))
+
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
