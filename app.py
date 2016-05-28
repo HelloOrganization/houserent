@@ -7,6 +7,7 @@ import os
 import time
 import random
 import datetime
+import json
 
 from flask import Flask, request, session, escape
 from flask import render_template, send_file, make_response, redirect, url_for
@@ -119,17 +120,6 @@ def signOut():
     resp.set_cookie('user_email', None)
     return resp
 
-def parseNum(num):
-    if num != '#':
-        lx = len(num)
-        n = num
-        op = ' = '
-        if num[lx - 1] == '+' :
-            n = num[:(lx - 1)]
-            op = ' >= '
-        return  op, n
-    else:
-        return None, None
 
 @app.route('/addHouse', methods=['POST'])
 def addHouse():
@@ -155,34 +145,85 @@ def addHouse():
     else:
         return 'Failed'
 
+def parseNum(num):
+    if num != '#':
+        lx = len(num)
+        n = num
+        op = ' = '
+        if num[lx - 1] == '+' :
+            n = num[:(lx - 1)]
+            op = ' >= '
+        return  op, n
+    else:
+        return '', ''
+
 @app.route('/search', methods=['POST'])
 def search():
-    city = request.form.get('city', None)
+    # user_email = request.cookies.get('user_email', None)
+    # if user_email == None:
+    #     return redirect(url_for('signIn'))
+    city = request.form.get('city', '')
     min_rent = str(request.form.get('min_rent', -1))
     max_rent = str(request.form.get('max_rent', 100000))
-    bedroom = request.form.get('bedroom', None)
-    bathroom = request.form.get('bathroom', None)
-    qstr  = 'select * from House where rent >= ' + min_rent + ' and rent <= ' + max_rent
-    if city != None:
-        qstr += 'and city = "' + city + '"'
+    if min_rent == '':
+        min_rent = '-1'
+    if max_rent == '':
+        max_rent = '100000'
+    print "*", min_rent, "*", max_rent, "*"
+    bedroom = request.form.get('bedroom', '')
+    bathroom = request.form.get('bathroom', '')
+    qstr  = 'select H.*, R.realty_name, R.website, E.env_nearbymarket, E.env_nearbyschool, E.env_safety'
+    qstr += ' from House as H, Realty as R, Environment as E where rent >= ' + min_rent + ' and rent <= ' + max_rent
+    if city != '':
+        qstr += ' and city = "' + city + '"'
     op, n = parseNum(bedroom)
-    if op != None:
+    if op != '':
         qstr += ' and bedroom' + op + n
     op, n = parseNum(bathroom)
-    if op != None:
+    if op != '':
         qstr += ' and bathroom' + op + n
-    qstr += ';'
+    qstr += ' and R.realty_email = H.realty_email and H.env_city = E.env_city and H.env_street = H.env_street;'
+    print qstr
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute(qstr)
     res = cursor.fetchall()
-    return res
+    conn.close()
+    print res
+    columns = [desc[0] for desc in cursor.description]
+    print columns
+    rows = [dict(zip(columns, r)) for r in res]
+    # houseids = tuple([r['houseid'] for r in rows])
+    # qstr = 'select houseid from Save where houseid in ' + str(houseids) + ' and renter_email = ' + user_email
+    # cursor.execute(qstr)
+    # saved = cursor.fetchall()
+    # saved = [r for r in saved]
+    # print saved
+    # for i in range(len(rows)):
+    #     rows[i]['saved'] = False
+    # for h in saved:
+    ret = json.dumps(rows)
+    print ret
+    return json.dumps(ret)
 
-@app.route('/save', methods=[])
+@app.route('/save', methods=['POST'])
 def save():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
         return redirect(url_for('signIn'))
+    houseid = request.form.get('houseid', None)
+    if houseid == None:
+        return 'No house'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.callproc('sp_save',(user_email, houseid))
+    data = cursor.fetchall()
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':

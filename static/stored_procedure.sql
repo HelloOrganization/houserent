@@ -122,3 +122,29 @@ BEGIN
     );
 END$$
 DELIMITER ;
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS sp_save $$
+CREATE PROCEDURE sp_save(
+   IN email        varchar(64),
+   IN hid           int
+)
+BEGIN
+    if ( select exists (select 1 from Save where renter_email = email and houseid = hid ) ) THEN
+    
+        select 'Already saved!';
+        
+    else
+        insert into Save
+            (
+                renter_email,
+                houseid
+            )
+            values
+            (
+                email,
+                hid
+            );
+    END if;
+END$$
+DELIMITER ;
