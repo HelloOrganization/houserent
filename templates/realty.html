@@ -42,22 +42,6 @@
 				</div>
 				<div class="tab-pane fade" id="update">
 					<table class="table" id="list_realty">
-						<thead>
-							<tr>
-								<th>编号</th>
-								<th>城市</th>
-								<th>街道</th>
-								<th>每月房租</th>
-								<th>卧室数</th>
-								<th>浴室数</th>
-								<th>所在楼层</th>
-								<th>面积</th>
-								<th>可租性</th>
-								<th>操作</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
 					</table>
 				</div>
 			</div>
@@ -76,11 +60,16 @@
 		//alert("here");
 		$.get("/list", {},
 			function(data){
-				alert("Data Loaded: " + data);
+				//alert("Data Loaded: " + data);
+				init_table();
 				draw_table(data);
 			});
 	}
 
+	function init_table(){
+		document.getElementById("list_realty").innerHTML="<thead><tr><th>编号</th><th>城市</th><th>街道</th><th>每月房租</th><th>卧室数</th><th>浴室数</th><th>所在楼层</th><th>面积</th><th>可租性</th><th>操作</th></tr></thead><tbody></tbody>";
+	}
+	
 	function draw_table(data){
 		var temp = JSON.parse(data);
 		for(var i=0;i<temp.length;i++){
