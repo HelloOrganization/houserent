@@ -62,7 +62,7 @@
 	}
 	
 	function init_table(data){
-		document.getElementById("search_res").innerHTML="<thead><tr>						<th>房屋编号</th><th>城市</th><th>街道</th><th>每月房租</th><th>卧室数</th>				<th>浴室数</th><th>所在楼层</th><th>面积</th><th>周边信息</th><th>物业信息</th>			<th>操作</th></tr></thead><tbody></tbody>";
+		document.getElementById("search_res").innerHTML="<thead><tr>						<th>编号</th><th>城市</th><th>街道</th><th>每月房租</th><th>卧室数</th>				<th>浴室数</th><th>所在楼层</th><th>面积</th><th>周边信息</th><th>物业信息</th>			<th>操作</th></tr></thead><tbody></tbody>";
 	}
 	
 	function draw_table(data){
@@ -71,7 +71,7 @@
 			var info = temp[i];
 			var tbl = document.getElementById("search_res");
 			var obj = tbl.insertRow(tbl.rows.length);
-			obj.insertCell().innerHTML = info.houseid;
+			obj.insertCell().innerHTML = i+1;
 			obj.insertCell().innerHTML = info.env_city;
 			obj.insertCell().innerHTML = info.env_street;
 			obj.insertCell().innerHTML = info.rent;

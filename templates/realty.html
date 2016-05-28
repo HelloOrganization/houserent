@@ -41,23 +41,23 @@
 					</form>
 				</div>
 				<div class="tab-pane fade" id="update">
-					<table class="table">
-					
-					<thead>
-						<tr>
-							<th>城市</th>
-							<th>街道</th>
-							<th>每月房租</th>
-							<th>卧室数</th>
-							<th>浴室数</th>
-							<th>所在楼层</th>
-							<th>面积</th>
-							<th>可租性</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
+					<table class="table" id="list_realty">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>城市</th>
+								<th>街道</th>
+								<th>每月房租</th>
+								<th>卧室数</th>
+								<th>浴室数</th>
+								<th>所在楼层</th>
+								<th>面积</th>
+								<th>可租性</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
 					</table>
 				</div>
 			</div>
@@ -74,9 +74,41 @@
 	
 	function list_houses(){
 		//alert("here");
-		$.post("./list", { renter_email: "John"},
+		$.get("/list", {},
 			function(data){
 				alert("Data Loaded: " + data);
+			});
+	}
+	
+	function draw_table(data){
+		var temp = JSON.parse(data);
+		for(var i=0;i<temp.length;i++){
+			var info = temp[i];
+			var tbl = document.getElementById("list_realty");
+			var obj = tbl.insertRow(tbl.rows.length);
+			obj.insertCell().innerHTML = i+1;
+			obj.insertCell().innerHTML = info.env_city;
+			obj.insertCell().innerHTML = info.env_street;
+			obj.insertCell().innerHTML = info.rent;
+			obj.insertCell().innerHTML = info.bedroom;
+			obj.insertCell().innerHTML = info.bathroom;
+			obj.insertCell().innerHTML = info.house_floor;
+			obj.insertCell().innerHTML = info.house_size;
+			obj.insertCell().innerHTML = info.availability;
+			var add_fav = "<a href=\"#\" onclick=\"change_avail("+info.houseid+","+info.availability+")\">更改可租性</a>";
+			obj.insertCell().innerHTML = add_fav;
+		}
+    }	
+	
+	function change_avail(house, availability){
+		$.post("/changeAvail", {"house_id":house, "avail":(1-availability)},
+			function(res){
+				//alert(res + 0)
+				if(res=='success')
+					alert("更改成功");
+				else
+					alert('something happens');
+				}
 			});
 	}
 </script>
