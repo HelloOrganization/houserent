@@ -23,11 +23,15 @@
 			<h1>欢迎使用简易租房信息网站！</h1>
 			<br/>
 			<ul id="myTab" class="nav nav-tabs">
-			<li class="active" style="width:50%" onclick="list_houses()"><a href="#update" data-toggle="tab">已添加信息</a></li>
+			<li class="active" style="width:50%"><a href="#update" data-toggle="tab">已添加信息</a></li>
 			<li style="width:50%"><a href="#add" data-toggle="tab">添加新房</a></li>
 			</ul>
 			<div id="myTabContent" class="tab-content">
-			   <div class="tab-pane fade in active" id="add">
+				<div class="tab-pane fade in active" id="update">
+					<table class="table" id="list_realty">
+					</table>
+				</div>
+			   <div class="tab-pane fade" id="add">
 			   <h3>请填写以下所有信息</h3>
 			   <form name="addOne" method="post" action="/addHouse">
 					<br/>
@@ -40,10 +44,6 @@
 					面积：<input type="number" name="house_size" min="1" required="required"><br/><br/>
 					<input type="submit" value="添加">
 					</form>
-				</div>
-				<div class="tab-pane fade" id="update">
-					<table class="table" id="list_realty">
-					</table>
 				</div>
 			</div>
 		</div>
