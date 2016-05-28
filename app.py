@@ -270,13 +270,24 @@ def listRealty():
     rows = [dict(zip(columns, r)) for r in res]
     return json.dumps(rows)
 
-@app.route('/favorite', methods=['POST'])
+@app.route('/favorite', methods=['GET'])
 def favorite():
+    return render_template('favorite.html')
+
+@app.route('/listfavorite', methods=['GET'])
+def listfavorite():
     user_email = request.cookies.get('user_email', None)
     if user_email == None:
         return 'signin'#redirect(url_for('index'))
-    qstr = 'select R.* from Save as S, House as H, Realty as R, Environment as E'
-    qstr += 'where S.renter_email = "' + user_email + '" and S.houseid = H.houseid '
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.callproc('sp_favorite', (user_email,))
+    res = cursor.fetchall()
+    conn.close()
+    columns = [desc[0] for desc in cursor.description]
+    print columns
+    rows = [dict(zip(columns, r)) for r in res]
+    return json.dumps(rows)
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))

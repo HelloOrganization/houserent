@@ -131,9 +131,9 @@ CREATE PROCEDURE sp_save(
 )
 BEGIN
     if ( select exists (select 1 from Save where renter_email = email and houseid = hid ) ) THEN
-    
+
         select 'Already saved!';
-        
+
     else
         insert into Save
             (
@@ -146,5 +146,21 @@ BEGIN
                 hid
             );
     END if;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS sp_favorite $$
+CREATE PROCEDURE sp_favorite(
+   IN email        varchar(64)
+)
+BEGIN
+    select H.*, R.realty_name, R.website, E.env_nearbymarket, E.env_nearbyschool, E.env_safety
+    from Save as S, House as H, Realty as R, Environment as E
+    where S.renter_email = email
+    and S.houseid = H.houseid
+    and H.realty_email = R.realty_email
+    and H.env_city = E.env_city
+    and H.env_street = E.env_street;
 END$$
 DELIMITER ;
