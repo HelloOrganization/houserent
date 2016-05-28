@@ -56,6 +56,11 @@
 	</div>
 </div>
 <script>
+alert(1);
+	var str1 = '[{ "name": "cxh", "sex": "man" }]'; 
+	var newjson = JSON.parse(str1);
+	alert(newjson[0].name);
+	
 	function submit_form(){
 		var info = $("#search").serialize();
 		$.post("/search", info, 
@@ -82,7 +87,7 @@
 			var add_fav = "<a onclick=\"change_fav("+info.house_id+")\">收藏</a>";
 			obj.insertCell().innerHTML = add_fav;
 		}
-    })
+    }
 	function change_fav(house){
 		$.post("/save", {"house_id":house}, 
 			function(res){
