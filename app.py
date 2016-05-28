@@ -225,6 +225,26 @@ def save():
     else:
         return '0'
 
+@app.route('/unsave', methods=['POST'])
+def unsave():
+    user_email = request.cookies.get('user_email', None)
+    if user_email == None:
+        return '-1'#redirect(url_for('index'))
+    houseid = request.form.get('house_id', None)
+    if houseid == None:
+        return 'No house'
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    qstr = 'delete from Save where renter_email = "' + user_email + '" and houseid = ' + houseid ;
+    #cursor.callproc('sp_unsave',(user_email, houseid))
+    cursor.execute(qstr)
+    data = cursor.fetchall()
+    if len(data) == 0:
+        conn.commit()
+        conn.close()
+        return '1'
+    else:
+        return '0'
 
 if __name__ == '__main__':
 	port = int(os.environ.get("PORT", my_port))
