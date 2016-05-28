@@ -22,7 +22,7 @@
 				<table class="table" id="my_fav">
 					<thead>
 						<tr>
-							<th>房屋编号</th>
+							<th>编号</th>
 							<th>城市</th>
 							<th>街道</th>
 							<th>每月房租</th>
@@ -57,7 +57,7 @@
 			var info = temp[i];
 			var tbl = document.getElementById("my_fav");
 			var obj = tbl.insertRow(tbl.rows.length);
-			obj.insertCell().innerHTML = info.houseid;
+			obj.insertCell().innerHTML = i+1;
 			obj.insertCell().innerHTML = info.env_city;
 			obj.insertCell().innerHTML = info.env_street;
 			obj.insertCell().innerHTML = info.rent;
