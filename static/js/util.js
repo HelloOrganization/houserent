@@ -1,6 +1,6 @@
 function AntiSqlValid(oField){
-   re= /select|update|delete|exec|count|¡¯|"|=|;|>|<|%/i;
+   re= /select|update|delete|exec|count|'|"|=|;|>|<|%/i;
    if(re.test(oField.value)){
-		alert("ÇëÄú²»ÒªÔÚ²ÎÊýÖÐÊäÈëÌØÊâ×Ö·ûºÍSQL¹Ø¼ü×Ö£¡"); 
+		alert("ä¸è¦æ’å…¥ç‰¹æ®Šå­—ç¬¦ï¼");
 		return false;
    }

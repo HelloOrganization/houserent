@@ -6,7 +6,7 @@
 	<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
 	<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-	<script src="/js/util.js"></script>
+	<script src="/static/js/util.js"></script>
 </head>
 <body>
 <div class="container">
@@ -22,7 +22,7 @@
 			</ul>
 			<div id="myTabContent" class="tab-content">
 				<div class="tab-pane fade in active" id="signup">
-					<form name="signup" method="post" onsubmit="validate_form(this)" action="/signUp">
+					<form name="signup" method="post"  action="/signUp">
 					<br/>
 					电子邮件：<input type="email" name="new_email" required="required"><br/><br/>
 					密码：<input type="text" name="new_passwd" required="required"><br/><br/>
@@ -36,7 +36,7 @@
 					</form>
 				</div>
 				<div class="tab-pane fade" id="signin">
-					<form name="signin" method="post" onsubmit="validate_form(this)" action="/signIn">
+					<form name="signin" method="post" action="/signIn">
 					<br/>
 					电子邮件：<input type="email" name="exist_email" required="required"><br/><br/>
 					密码：<input type="text" name="exist_passwd" required="required"><br/><br/>
@@ -55,18 +55,18 @@
       //$('#myTab li:eq(1) a').tab('show');
 	  $("#realty").hide();
    });
-   
-	function validate_form(thisform){
-		var tagElements = thisform.getElementsByTagName('input');    
-		for (var i=0;i<tagElements.length;i++){  
+
+	/*function validate_form(thisform){
+		var tagElements = thisform.getElementsByTagName('input');
+		for (var i=0;i<tagElements.length;i++){
 			if(AntiSqlValid(tagElements[i]) == false){
 				tagElements.focus();
 				return false;
-			}  
+			}
 		}
 		return true;
 	}
-	
+*/
 	function change_vis(){
 	//alert($('#is_realty').is(':checked'));
 		if ($('#is_realty').is(':checked') == true) {
