@@ -174,7 +174,9 @@ def search():
     # user_email = request.cookies.get('user_email', None)
     # if user_email == None:
     #     return redirect(url_for('index'))
-    city = request.form.get('city', '')
+    print '***search'
+    city = request.form.get('city', None)
+    print city
     min_rent = str(request.form.get('min_rent', -1))
     max_rent = str(request.form.get('max_rent', 100000))
     if min_rent == '':

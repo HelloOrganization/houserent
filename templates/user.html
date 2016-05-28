@@ -68,6 +68,7 @@
 			return false;
 */
 		var info = $("#search").serialize();
+		info = decodeURIComponent(info,true);
 		$.post("/search", info,
 			function(data){
 				//alert("search result"+data);
